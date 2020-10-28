@@ -1,6 +1,7 @@
 import math as ma
 import os
 import sys
+import copy
 
 
 def factorize(numbers):
@@ -46,40 +47,46 @@ def factorize(numbers):
             prime = False
             n += 1
 
-    def _factorize(number, factors=[]):
+    def _factorize(number, factors):
         """Return the prime factorization of number as a list"""
+        factors = copy.copy(factors)
         factors_number = []
-        list_to_return = []
         d = 2
+        if len(factors) == 0:
+            factors.append(d)
         idx_d = 0
         numb = number  # copy to keep number as it is
         while (numb != 1):
-            list_to_return.append(d)
             while numb % d == 0:
                 factors_number.append(d)
                 numb = numb // d
             if len(factors_number) == 0 and d > ma.sqrt(number):
-                list_to_return = list_to_return if len(list_to_return) > len(factors) else factors
-                return ([number], list_to_return)
+                return ([number], factors)
             if len(factors) > 0 and idx_d < len(factors) - 1:
                 idx_d += 1
                 d = factors[idx_d]
             else:
                 d = _get_next_prime(d)
+                factors.append(d)
 
-        list_to_return = list_to_return if len(list_to_return) > len(factors) else factors
-        return (factors_number, list_to_return)
+        return (factors_number, factors)
 
     # max_number = max(numbers)
     # factors = _get_prime_numbers(int(ma.sqrt(max_number)) + 1)
     result = {}
     list_primes = [2]
     numbers = sorted(numbers)
+    print(numbers)
     # print(numbers)
-    for number in numbers:
+    for i, number in enumerate(numbers):
+        # if i == 0 or i==1 or i==3:
+        #     print(i)
+        # print(number)
+        # print('before', list_primes)
         res = _factorize(number, list_primes)
         list_primes = res[1]
-        result[number] = res
+        # print('after', list_primes)
+        result[number] = res[0]
         # result[number] = _factorize(number, list_primes)
 
     return result
@@ -103,6 +110,7 @@ if __name__=="__main__":
 
      # Pour chacun des fichiers en entrée 
     for data_filename in sorted(os.listdir(input_dir)):
+        # if data_filename == 'training_data01.txt':
         print(data_filename)
         # importer la liste des nombres
         data_file = open(os.path.join(input_dir, data_filename), "r")
