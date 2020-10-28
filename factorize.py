@@ -1,7 +1,6 @@
 import math as ma
 import os
 import sys
-import copy
 
 
 def factorize(numbers):
@@ -19,58 +18,9 @@ def factorize(numbers):
             -- Ne changez pas le nom de cette fonction, vous pouvez ajouter d'autres fonctions appelées depuis celle-ci.
             -- Ne laissez pas trainer du code hors fonctions car ce module sera importé et du coup un tel code sera exécuté et cela vous pénalisera en temps.
     """
-    # def _get_prime_numbers(n):
-    #     """Return a list of all prime numbers <= n"""
-    #     prime_numbers = [2]
-    #     for number in range(3, n + 1):
-    #         prime = True
-    #         for p in range(2, int(ma.sqrt(number)) + 1):
-    #             if number % p == 0:
-    #                 prime = False
-    #                 break
-    #         if prime:
-    #             prime_numbers.append(number)
-    #     return prime_numbers
 
-    def _get_next_prime(number):
-        """Return the smallest prime number greater than number"""
-        n = number + 1
-        prime = False
-        while not (prime):
-            prime = True
-            for p in range(2, int(ma.sqrt(n)) + 1):
-                if n % p == 0:
-                    prime = False
-                    break
-            if prime:
-                return n
-            prime = False
-            n += 1
-
-    # def _factorize(number, factors):
-    #     """Return the prime factorization of number as a list"""
-    #     factors = copy.copy(factors)
-    #     factors_number = []
-    #     d = 2
-    #     if len(factors) == 0:
-    #         factors.append(d)
-    #     idx_d = 0
-    #     numb = number  # copy to keep number as it is
-    #     while (numb != 1):
-    #         while numb % d == 0:
-    #             factors_number.append(d)
-    #             numb = numb // d
-    #         if len(factors_number) == 0 and d > ma.sqrt(number):
-    #             return ([number], factors)
-    #         if len(factors) > 0 and idx_d < len(factors) - 1:
-    #             idx_d += 1
-    #             d = factors[idx_d]
-    #         else:
-    #             d = _get_next_prime(d)
-    #             factors.append(d)
-
-    #     return (factors_number, factors)
     def _factorize_wheel(number):
+        """Factorize a number using wheel method (base of 3 primes)"""
         factors_number = []
         base = [2, 3, 5]
         n = number
@@ -79,7 +29,16 @@ def factorize(numbers):
                 factors_number.append(d)
                 n = n // d
 
-        increments = [4, 2, 4, 2, 4, 6, 2, 6]
+        increments = [
+            4,
+            2,
+            4,
+            2,
+            4,
+            6,
+            2,
+            6,
+        ]  # list of steps to take between two consecutive potential divisors in the wheel
         i = 0
         d = 7
         while d <= ma.sqrt(n):
@@ -96,9 +55,7 @@ def factorize(numbers):
 
     result = {}
     for i, number in enumerate(numbers):
-        # print(number)
         result[number] = _factorize_wheel(number)
-        # result[number] = _factorize(number, list_primes)
 
     return result
 
@@ -122,8 +79,6 @@ if __name__ == "__main__":
 
         #  Pour chacun des fichiers en entrée
     for data_filename in sorted(os.listdir(input_dir)):
-        # if data_filename == 'training_data01.txt':
-        print(data_filename)
         #  importer la liste des nombres
         data_file = open(os.path.join(input_dir, data_filename), "r")
         numbers = [int(line) for line in data_file.readlines()]
@@ -140,4 +95,3 @@ if __name__ == "__main__":
             output_file.write('{} {}\n'.format(n, primes))
 
         output_file.close()
-
